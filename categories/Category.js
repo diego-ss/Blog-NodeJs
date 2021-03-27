@@ -14,4 +14,7 @@ const Category = connection.define('categories', {
     }
 });
 
+//atualizando a tabela sempre que a aplicação é iniciada
+//Category.sync({force:true});
+
 module.exports = Category;
