@@ -5,6 +5,9 @@ const app = express();
 const bodyParser = require("body-parser");
 //carregando conexão
 const connection = require("./database/database");
+//importando controllers
+const categoriesController = require("./categories/CategoriesController");
+const articlesController = require("./articles/ArticlesController");
 
 //setando view engine para ejs
 app.set("view engine", 'ejs');
@@ -21,6 +24,7 @@ app.get("/", (req, res)=>{
 //body parser
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
 //database
 connection
     .authenticate()
@@ -30,6 +34,12 @@ connection
     .catch((error) => {
         console.error(erro);
     });
+
+
+//utilizando rotas importadas
+//pode ser utilizado um prefixo aqui na rota
+app.use("/", categoriesController);
+app.use("/", articlesController);
 
 //inicializando servidor
 app.listen(8080, () => {
