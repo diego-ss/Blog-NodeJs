@@ -7,7 +7,7 @@ router.get("/articles", (req, res)=>{
 });
 
 router.get("/admin/articles/new", (req, res)=>{
-    res.send("ROTA DE CRIAÇÃO DE ARTIGOS");
+    res.render("admin/articles/new");
 });
 
 //depois é só exportar o router
