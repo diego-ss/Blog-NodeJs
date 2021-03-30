@@ -4,6 +4,8 @@
     <hr>
     <h2>Categorias:</h2>
     <hr>
+    <a class="btn btn-primary" href="/admin/categories/new">nova categoria</a>
+    <hr>
 
     <table class="table table-bordered">
         <thead>
@@ -21,7 +23,10 @@
                 <th><%=category.id%></th>
                 <th><%=category.title%></th>
                 <th><%=category.slug%></th>
-                <th></th>
+                <th>
+                    <button class="btn btn-dark">editar</button>
+                    <button class="btn btn-danger">excluir</button>
+                </th>
             </tr>
         <% }) %>
         </tbody>
