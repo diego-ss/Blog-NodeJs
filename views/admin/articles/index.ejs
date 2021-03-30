@@ -1,0 +1,56 @@
+<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/navbar.ejs') %>
+<div class="container">
+    <hr>
+    <h2>Artigos:</h2>
+    <hr>
+    <a class="btn btn-primary" href="/admin/articles/new">novo artigo</a>
+    <hr>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Categoria</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% articles.forEach(article => { %> 
+                <tr>
+                    <td><%=article.id%></td>
+                    <td><%=article.title%></td>
+                    <td><%=article.slug%></td>
+                    <td><%=article.category.title%></td>
+                    <td>
+                        <a class="btn btn-light" href="/admin/articles/edit/<%=article.id%>">editar</a>
+    
+                        <form method="POST" action="/articles/delete" style="display: inline;"
+                        onsubmit="confirmDeleteAction(event, this)">
+                            <input type="hidden" name="id" value="<%=article.id%>">
+                            <button class="btn btn-dark">excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            <%})%>
+        </tbody>
+    </table>
+</div>
+<%- include('../../partials/footer.ejs') %>
+
+<script>
+    //previnindo deletar sem querer
+    function confirmDeleteAction(event, form){
+        event.preventDefault();  
+        const decision = confirm("deseja realmente excluir esse item?");
+        
+        if(decision){
+            form.submit();
+        }else{
+            console.log("envio cancelado!");
+        }
+    }
+</script>

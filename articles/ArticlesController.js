@@ -6,8 +6,13 @@ const Category = require("../categories/Category");
 const Article = require("../articles/Article");
 const slugify = require("slugify");
 
-router.get("/articles", (req, res)=>{
-    res.send("ROTA DE ARTIGOS");
+router.get("/admin/articles", (req, res)=>{
+    Article.findAll(
+        //incluindo o objeto category
+        {include: [{model: Category}]}
+        ).then(articles => {
+        res.render("admin/articles/index", {articles: articles});
+    }); 
 });
 
 router.get("/admin/articles/new", (req, res)=>{
@@ -36,5 +41,21 @@ router.post("/articles/save", (req, res)=>{
         res.redirect("/admin/articles/new");
     }
 });
+
+router.post("/articles/delete", (req, res)=>{
+    var id = req.body.id;
+
+    if(id != undefined && !isNaN(id)){
+        Article.destroy({
+            where: {id: id}
+        }).then(()=>{
+            res.redirect("/admin/articles");
+        });
+    } else {
+        res.redirect("/admin/articles");
+    }
+});
+
+
 //depois é só exportar o router
 module.exports = router;
