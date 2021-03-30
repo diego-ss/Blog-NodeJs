@@ -49,20 +49,23 @@ router.get("/admin/articles/edit/:id", (req, res)=>{
 
 router.get("/articles/page/:num", (req, res) => {
     const page = req.params.num;
-    const limit = 2;
+    const limit = 4;
     var offset = 0;
 
     if(isNaN(page) || page == 1){
         offset = 0;
     } else {
-        offset = parseInt(page) * limit; 
+        offset = (parseInt(page) - 1) * limit; 
     }
 
     //retorna os elementos e a quantidade deles
     Article.findAndCountAll({
         //limita a 4 registros
         limit: limit,
-        offset: offset
+        offset: offset,
+        order:[
+            ['id', 'DESC']
+        ]
     }).then(articles => {
         var next;
         if(offset + limit >= articles.count){
@@ -72,6 +75,7 @@ router.get("/articles/page/:num", (req, res) => {
         }
         //verificando se existe outra página ainda
         var result = {
+            page: parseInt(page),
             next: next,
             articles: articles,
         }
