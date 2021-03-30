@@ -21,7 +21,65 @@ app.use(express.static("public"));
 //criando rota principal
 app.get("/", (req, res)=>{
     //renderizando página index
-    res.render("index");
+    Article.findAll({
+        order:[
+            ['id', 'DESC']
+        ]
+    }).then(articles => {
+        Category.findAll()
+        .then(categories => {
+            res.render("index", 
+            {articles: articles, categories: categories});
+        });
+    });
+
+});
+
+//criando rota de artigo
+app.get("/:slug", (req, res)=>{
+    var slug = req.params.slug;
+
+    try{
+        //renderizando página do artigo
+        Article.findOne({
+            where: {slug: slug}
+        }).then(article => {
+            if(article){
+                Category.findAll()
+        .then(categories => {
+            res.render("article", {article: article, categories: categories});
+        });
+            }
+            else{
+                res.redirect("/");
+            }
+    });
+    } catch {
+        res.redirect("/");
+    }
+});
+
+app.get("/category/:slug", (req, res) => {
+    var slug = req.params.slug;
+    console.log(slug);
+    try{
+        //renderizando página do artigo
+        Category.findOne({
+            where: {slug: slug},
+            include: [{model: Article}]
+        }).then(category => {
+            if(category){
+                Category.findAll().then(categories => {
+                    res.render("index", {articles: category.articles, categories: categories});
+                });
+            }
+            else{
+                res.redirect("/");
+            }
+    });
+    } catch {
+        res.redirect("/");
+    }
 });
 
 //body parser
