@@ -17,12 +17,28 @@ router.post("/categories/save", (req, res)=>{
             title: title,
             slug: slugify(title)
         }).then(()=>{
-            res.redirect("/");
+            res.redirect("/admin/categories");
         });
     } else {
         res.redirect("/admin/categories/new");
     }
 });
+
+router.post("/categories/delete", (req, res)=>{
+    var id = req.body.id;
+
+    if(id != undefined && !isNaN(id)){
+        //removendo categoria
+        Category.destroy({
+            where: {id: id}
+        }).then(()=>{
+            res.redirect("/admin/categories");
+        });
+    } else {
+        res.redirect("/admin/categories");
+    }
+});
+
 
 router.get("/admin/categories", (req, res)=>{
 

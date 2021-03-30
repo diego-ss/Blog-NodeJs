@@ -24,8 +24,13 @@
                 <th><%=category.title%></th>
                 <th><%=category.slug%></th>
                 <th>
-                    <button class="btn btn-dark">editar</button>
-                    <button class="btn btn-danger">excluir</button>
+                    <button class="btn btn-primary">editar</button>
+
+                    <form method="POST" action="/categories/delete" style="display: inline;"
+                    onsubmit="confirmDeleteAction(event, this)">
+                        <input type="hidden" name="id" value="<%=category.id%>">
+                        <button class="btn btn-dark">excluir</button>
+                    </form>
                 </th>
             </tr>
         <% }) %>
@@ -33,3 +38,17 @@
     </table>
 </div>
 <%- include('../../partials/footer.ejs') %>
+
+<script>
+    //previnindo deletar sem querer
+    function confirmDeleteAction(event, form){
+        event.preventDefault();  
+        const decision = confirm("deseja realmente excluir esse item?");
+        
+        if(decision){
+            form.submit();
+        }else{
+            console.log("envio cancelado!");
+        }
+    }
+</script>
