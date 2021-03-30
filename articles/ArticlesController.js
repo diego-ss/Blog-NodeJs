@@ -22,6 +22,66 @@ router.get("/admin/articles/new", (req, res)=>{
         });
 });
 
+router.get("/admin/articles/edit/:id", (req, res)=>{
+    var id = req.params.id;
+
+    if(isNaN(id)){
+        res.redirect("/admin/articles");
+    }
+
+    Article.findByPk(id).then(article =>{
+        if(article){
+            Category.findAll().then(categories => {
+                res.render("admin/articles/edit", 
+                {
+                    article: article, categories:categories
+                });
+            })
+            
+        } else{
+            res.redirect("/admin/articles");
+        }
+    }).catch(error => {
+        res.redirect("/admin/articles");
+    });
+    
+});
+
+router.get("/articles/page/:num", (req, res) => {
+    const page = req.params.num;
+    const limit = 2;
+    var offset = 0;
+
+    if(isNaN(page) || page == 1){
+        offset = 0;
+    } else {
+        offset = parseInt(page) * limit; 
+    }
+
+    //retorna os elementos e a quantidade deles
+    Article.findAndCountAll({
+        //limita a 4 registros
+        limit: limit,
+        offset: offset
+    }).then(articles => {
+        var next;
+        if(offset + limit >= articles.count){
+            next = false;
+        } else {
+            next = true;
+        }
+        //verificando se existe outra página ainda
+        var result = {
+            next: next,
+            articles: articles,
+        }
+
+        Category.findAll().then(categories => {
+            res.render("admin/articles/page", {result: result, categories: categories});
+        });
+    });
+});
+
 router.post("/articles/save", (req, res)=>{
     var title = req.body.title;
     var category = req.body.category;
@@ -75,30 +135,7 @@ router.post("/articles/delete", (req, res)=>{
     }
 });
 
-router.get("/admin/articles/edit/:id", (req, res)=>{
-    var id = req.params.id;
 
-    if(isNaN(id)){
-        res.redirect("/admin/articles");
-    }
-
-    Article.findByPk(id).then(article =>{
-        if(article){
-            Category.findAll().then(categories => {
-                res.render("admin/articles/edit", 
-                {
-                    article: article, categories:categories
-                });
-            })
-            
-        } else{
-            res.redirect("/admin/articles");
-        }
-    }).catch(error => {
-        res.redirect("/admin/articles");
-    });
-    
-});
 
 
 
