@@ -8,9 +8,11 @@ const connection = require("./database/database");
 //importando controllers
 const categoriesController = require("./categories/CategoriesController");
 const articlesController = require("./articles/ArticlesController");
+const usersController = require("./users/UsersController");
 //importando models
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
+const User = require("./users/User");
 
 //setando view engine para ejs
 app.set("view engine", 'ejs');
@@ -102,6 +104,7 @@ connection
 //pode ser utilizado um prefixo aqui na rota
 app.use("/", categoriesController);
 app.use("/", articlesController);
+app.use("/", usersController);
 
 //inicializando servidor
 app.listen(8080, () => {
