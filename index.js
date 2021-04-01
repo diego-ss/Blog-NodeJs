@@ -28,7 +28,7 @@ app.use(session({
     //secret para aumentar a segurança da sessão
     secret: "PorqueDeusamouomundodetalmaneiraquedeuseuFilhoUnigenitoparaquetodoaquelequenElecrernaoperecamastenhavidaeterna",
     //configurando cookie (tempo máximo 30 seg)
-    cookie: {maxAge: 30000},
+    cookie: {maxAge: 1200000},
     resave:true,
     saveUninitialized: true
 }));
