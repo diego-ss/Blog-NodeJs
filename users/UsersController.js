@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const User = require("./User");
 const bcrypt = require("bcryptjs");
+//middleware de autenticação
+const adminAuth = require("../middlewares/adminauth");
 
 function hashPassword(password){
      //gerando um "sal" para "temperar" a criptografia
@@ -11,7 +13,8 @@ function hashPassword(password){
      return hashpassword;
 }
 
-router.get("/admin/users", (req, res) => {
+router.get("/admin/users", adminAuth, (req, res) => {
+
     User.findAll()
         .then(users => {
             if(users){
@@ -22,7 +25,7 @@ router.get("/admin/users", (req, res) => {
         });
 });
 
-router.get("/admin/users/create", (req, res) => {
+router.get("/admin/users/create", adminAuth, (req, res) => {
     res.render("admin/users/create");
 });
 
@@ -70,7 +73,7 @@ router.post("/authenticate", (req, res) => {
                     id: user.id,
                     email: user.email
                 }
-                res.json(req.session.user);
+                res.redirect("/admin/articles");
             } else {
                 res.redirect("/login");
             }

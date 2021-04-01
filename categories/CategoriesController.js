@@ -4,8 +4,10 @@ const router = express.Router();
 //model de categorias
 const Category = require("./Category");
 const slugify = require("slugify");
+//middleware de autenticação
+const adminAuth = require("../middlewares/adminauth");
 
-router.get("/admin/categories/new", (req, res)=>{
+router.get("/admin/categories/new", adminAuth, (req, res)=>{
     res.render("admin/categories/new")
 });
 
@@ -55,7 +57,7 @@ router.post("/categories/delete", (req, res)=>{
     }
 });
 
-router.get("/admin/categories", (req, res)=>{
+router.get("/admin/categories", adminAuth, (req, res)=>{
 
     Category.findAll().then(categories => {
         res.render("admin/categories/index", 
