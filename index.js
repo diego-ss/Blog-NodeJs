@@ -13,9 +13,24 @@ const usersController = require("./users/UsersController");
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
 const User = require("./users/User");
+//importando express session para sessões
+const session = require("express-session");
 
 //setando view engine para ejs
 app.set("view engine", 'ejs');
+
+//SESSIONS
+//REDIS - BD PARA SALVAR SESSÕES E CASH
+app.use(session({
+    //secret para aumentar a segurança da sessão
+    secret: "PorqueDeusamouomundodetalmaneiraquedeuseuFilhoUnigenitoparaquetodoaquelequenElecrernaoperecamastenhavidaeterna",
+    //configurando cookie (tempo máximo 30 seg)
+    cookie: {maxAge: 30000},
+    resave:true,
+    saveUninitialized: true
+}));
+
+//---------------------------------------
 
 // Static itens estáticos na pasta public
 app.use(express.static("public"));
@@ -37,6 +52,32 @@ app.get("/", (req, res)=>{
     });
 
 });
+
+//rotas para sessões
+app.get("/session", (req, res)=> {
+    //podemos guardar qualquer tipo de dados aqui
+    //eles podem ser acessados globalmente
+    req.session.treinamento = "Treinando sessions";
+    req.session.ano = "2021";
+    req.session.email = "asdasdas";
+    req.session.user = {
+        username: "teste",
+        email: "email@email.com",
+        id: 10
+    }
+    res.send("Sessão gerada!");
+});
+
+app.get("/leitura", (req, res)=> {
+    //acessando dados gravados
+    res.json({
+        treinamento: req.session.treinamento,
+        ano: req.session.ano,
+        email: req.session.email,
+        usuario: req.session.user,
+    });
+});
+//---------------------------------
 
 //criando rota de artigo
 app.get("/:slug", (req, res)=>{
@@ -105,6 +146,8 @@ connection
 app.use("/", categoriesController);
 app.use("/", articlesController);
 app.use("/", usersController);
+
+
 
 //inicializando servidor
 app.listen(8080, () => {
