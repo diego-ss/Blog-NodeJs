@@ -149,6 +149,7 @@ connection
 
 
 //inicializando servidor
-app.listen(8080, () => {
+//3000 é a porta que roda no umbler
+app.listen(3000, () => {
     console.log("O servidor está rodando!");
 });
