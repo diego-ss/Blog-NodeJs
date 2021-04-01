@@ -3,6 +3,9 @@ const express = require("express");
 const app = express();
 //carregando body parser
 const bodyParser = require("body-parser");
+//body parser
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 //carregando conexão
 const connection = require("./database/database");
 //importando controllers
@@ -79,6 +82,13 @@ app.get("/leitura", (req, res)=> {
 });
 //---------------------------------
 
+//utilizando rotas importadas
+//pode ser utilizado um prefixo aqui na rota
+app.use("/", categoriesController);
+app.use("/", articlesController);
+app.use("/", usersController);
+
+
 //criando rota de artigo
 app.get("/:slug", (req, res)=>{
     var slug = req.params.slug;
@@ -126,9 +136,6 @@ app.get("/category/:slug", (req, res) => {
     }
 });
 
-//body parser
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
 
 //database
 connection
@@ -139,14 +146,6 @@ connection
     .catch((error) => {
         console.error(erro);
     });
-
-
-//utilizando rotas importadas
-//pode ser utilizado um prefixo aqui na rota
-app.use("/", categoriesController);
-app.use("/", articlesController);
-app.use("/", usersController);
-
 
 
 //inicializando servidor

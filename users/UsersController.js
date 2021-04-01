@@ -3,6 +3,14 @@ const router = express.Router();
 const User = require("./User");
 const bcrypt = require("bcryptjs");
 
+function hashPassword(password){
+     //gerando um "sal" para "temperar" a criptografia
+     var salt = bcrypt.genSaltSync(10);
+     //gerando hash
+     var hashpassword = bcrypt.hashSync(password, salt);
+     return hashpassword;
+}
+
 router.get("/admin/users", (req, res) => {
     User.findAll()
         .then(users => {
@@ -26,10 +34,7 @@ router.post("/users/add", (req, res) => {
         where: {email: email}
     }).then(user => {
         if(user == undefined){
-            //gerando um "sal" para "temperar" a criptografia
-            var salt = bcrypt.genSaltSync(10);
-            //gerando hash
-            var hashpassword = bcrypt.hashSync(password, salt);
+            var hashpassword = hashPassword(password);
 
             User.create({
                 email: email,
@@ -43,8 +48,36 @@ router.post("/users/add", (req, res) => {
             res.redirect("/admin/users/create");
         }
     });
+});
 
-  
+router.get("/login", (req, res) => {
+    res.render("admin/users/login");
+});
+
+router.post("/authenticate", (req, res) => {
+    var email = req.body.email;
+    var password = req.body.password;
+    var hashpassword = hashPassword(password);
+
+    User.findOne({
+        where: {email: email}
+    }).then(user => {
+        if(user){
+            var correct = bcrypt.compareSync(password, user.password);
+
+            if(correct){
+                req.session.user = {
+                    id: user.id,
+                    email: user.email
+                }
+                res.json(req.session.user);
+            } else {
+                res.redirect("/login");
+            }
+        } else {
+            res.redirect("/login");
+        }
+    });
 });
 
 //User.sync({force: true});
